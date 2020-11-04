@@ -139,7 +139,7 @@ extension GnomesViewController { // Collection data source and delegates
                 cell.alpha = 1.0
             })
         }else {
-            let rotationTransform = CATransform3DTranslate(CATransform3DIdentity, 0,100, 0)
+            let rotationTransform = CATransform3DTranslate(CATransform3DIdentity,0,100,0)
             cell.layer.transform = rotationTransform
             cell.alpha = 0
             UIView.animate(withDuration: 0.5, animations: {
@@ -160,6 +160,7 @@ extension GnomesViewController : SearchProtocol {
             self.gnomesViewModel?.filterStatus = FilterStatus.Filter
             DispatchQueue.main.async {
                 self.collectionView.collectionViewLayout = self.generateLayout()
+                
             }
         }
     }
@@ -175,6 +176,7 @@ extension GnomesViewController : SearchProtocol {
         self.gnomesViewModel?.searchEscope = self.getSelectedScope(selectedScope: scopeOption)
         self.searchDidChange(searchText: searchC.searchC.searchBar.text ?? "")
         DispatchQueue.main.async {
+            self.resetCollectionScroll() 
             self.collectionView.reloadData()
         }
     }
@@ -197,6 +199,13 @@ extension GnomesViewController : SearchProtocol {
         self.collectionView.collectionViewLayout = self.generateLayout()
         DispatchQueue.main.async {
             self.collectionView.reloadData()
+            self.resetCollectionScroll()
         }
+    }
+    
+    func resetCollectionScroll() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            self.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredVertically, animated: true)
+        })
     }
 }
